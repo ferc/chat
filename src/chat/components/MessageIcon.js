@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import blue from '@material-ui/core/colors/blue'
 import grey from '@material-ui/core/colors/grey'

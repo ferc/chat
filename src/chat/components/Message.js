@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
 import moment from 'moment'
-import green from '@material-ui/core/colors/green'
-import grey from '@material-ui/core/colors/grey'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
@@ -12,16 +10,19 @@ import MessageIcon from './MessageIcon'
 const styles = theme => ({
   container: {
     borderRadius: 4,
-    margin: theme.spacing.unit,
+    marginTop: theme.spacing.unit / 2,
+    marginRight: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit / 2,
+    marginLeft: theme.spacing.unit * 2,
     padding: theme.spacing.unit,
     maxWidth: '70%',
     width: 'auto'
   },
   received: {
-    backgroundColor: grey['100']
+    backgroundColor: '#ffffff'
   },
   sent: {
-    backgroundColor: green['100']
+    backgroundColor: '#dcf8c6'
   },
   text: {
     flex: 1,

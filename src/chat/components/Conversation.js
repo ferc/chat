@@ -1,8 +1,27 @@
 import React, { Component } from 'react'
 import Grid from '@material-ui/core/Grid'
+import { withStyles } from '@material-ui/core/styles'
 
+import ChatBackgroundImage from '../assets/background-chat.png'
 import messageStatus from '../enums/messageStatus'
 import Message from './Message'
+import MessageForm from './MessageForm'
+
+const styles = theme => ({
+  container: {
+    backgroundImage: `url("${ChatBackgroundImage}")`,
+    height: '100%'
+  },
+  form: {
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    padding: theme.spacing.unit
+  },
+  thread: {
+    flex: 1,
+    paddingBottom: theme.spacing.unit * 2,
+    overflow: 'auto'
+  }
+})
 
 const getMessageStatus = ({
   deliveredDate,
@@ -22,7 +41,7 @@ class Conversation extends Component {
   }
 
   render() {
-    const { deliveredDate, messages, readDate, user } = this.props
+    const { classes, deliveredDate, messages, readDate, user } = this.props
 
     const thread = messages.map(({ date, id, message, senderId }) => {
       const isCurrentUser = senderId === user.id
@@ -34,22 +53,29 @@ class Conversation extends Component {
       })
 
       return (
-        <Message
-          date={date}
-          isCurrentUser={isCurrentUser}
-          key={id}
-          message={message}
-          status={status}
-        />
+        <Grid key={id} item>
+          <Message
+            date={date}
+            isCurrentUser={isCurrentUser}
+            message={message}
+            status={status}
+          />
+        </Grid>
       )
     })
 
     return (
-      <Grid direction="column" container>
-        {thread}
+      <Grid className={classes.container} direction="column" container>
+        <Grid className={classes.thread} direction="column" wrap="nowrap" container>
+          {thread}
+        </Grid>
+
+        <Grid className={classes.form} container>
+          <MessageForm />
+        </Grid>
       </Grid>
     )
   }
 }
 
-export default Conversation
+export default withStyles(styles)(Conversation)
