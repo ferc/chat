@@ -22,6 +22,10 @@ Light app, file sizes after gzip:
 * JS: 114.03 KB
 * CSS: 955 B
 
+### Latency
+
+In order to simulate a real environment and to be able to appreciate the changes in the UI, there are some latency in the requests, to change the latency value edit the `latency` constant in the `src/chat/mocks/utils.js` file (currently in 1 second)
+
 ### Development
 
 Node.js installed (> 8.x LTS) required.
