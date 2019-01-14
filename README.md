@@ -10,13 +10,11 @@
 
 ## App
 
-**Demo:** [https://chat-n8q67q1g1.now.sh/](https://chat-n8q67q1g1.now.sh/)
+**Demo:** [https://chat-f9w34rrfr.now.sh](https://chat-f9w34rrfr.now.sh)
 
-Football Player Search built with React, Redux, Redux Thunk and Reselect for JavaScript and Bootstrap for CSS.
+Chat was built with React, Redux, Redux Thunk and some mocks for JavaScript and Material-UI for CSS.
 
-API endpoint set in the environment file.
-
-The app just use Bootstrap CSS only.
+A lot of reusable components and easy to change
 
 Unit tests and integration tests with Jest and Enzyme.
 
@@ -38,6 +36,15 @@ Node.js installed (> 8.x LTS) required.
 1. Install the project dependencies: `npm install`
 2. Build the app: `npm run build`
 3. Run the build (or you can deploy the build): `serve -s build`
+
+### Deploy to Now
+
+Node.js installed (> 8.x LTS) required.
+
+1. Install Now `npm i -g now`
+2. Run `now`
+
+More information: [https://zeit.co/examples/create-react-app](https://zeit.co/examples/create-react-app)
 
 ## Out of Scope
 
