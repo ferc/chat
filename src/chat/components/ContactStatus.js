@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import moment from 'moment'
 import Typography from '@material-ui/core/Typography'
 import { NAME } from '../constants'
 
@@ -22,19 +23,14 @@ class ContactStatus extends Component {
 
   getLabel = () => {
     const { contactIsTyping, readDate } = this.props
+
     if (contactIsTyping) return 'is typing...'
 
-    const isOnline = this.isOnline(readDate)
-    if (isOnline) return 'online'
+    if (moment().diff(readDate) < (20 * 1000)) return 'online'
+
+    if (readDate) return `last seen ${moment(readDate).fromNow()}`
 
     return null
-  }
-
-  isOnline = readDate => {
-    const { now } = this.state
-    const readTime = new Date(readDate).getTime()
-
-    return (now - readTime) < (20 * 1000)
   }
 
   render() {

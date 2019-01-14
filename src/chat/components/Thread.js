@@ -15,10 +15,10 @@ const getMessageStatus = ({
 }) => {
   if (!isCurrentUser) return null
   if (error) return messageStatus.error
+  if (!id) return messageStatus.sending
   if (messageDate <= readDate) return messageStatus.read
   if (messageDate <= deliveredDate) return messageStatus.delivered
-  if (id) return messageStatus.sent
-  return messageStatus.sending
+  return messageStatus.sent
 }
 
 class Thread extends Component {
@@ -53,13 +53,17 @@ class Thread extends Component {
 
     const { deliveredDate, messages, readDate } = data
 
+    const sortByDate =  (a, b) => {
+      // pending messages without errors at the end
+      if (!a.id && !a.error) return 1
+      if (a.date > b.date) return 1
+      if (a.date < b.date) return -1
+      return 0
+    }
+
     const thread = messages
       .concat(pendingMessages)
-      .sort((a, b) => {
-        if (a.date < b.date) return -1
-        if (a.date > b.date) return 1
-        return 0
-      })
+      .sort(sortByDate)
       .map(({ content, date, error, id, receiverId, trackId }) => {
         const isCurrentUser = receiverId !== user.id
         const status = getMessageStatus({

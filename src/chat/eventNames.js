@@ -1,0 +1,5 @@
+export const MESSAGE_DELIVERED = 'message-delivered'
+export const MESSAGE_READ = 'message-read'
+export const NEW_MESSAGE = 'new-message'
+export const STOP_TYPING = 'stop-typing'
+export const TYPING = 'typing'

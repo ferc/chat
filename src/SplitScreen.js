@@ -7,8 +7,10 @@ import setupStore from './setupStore'
 
 const styles = theme => ({
   chat: {
-    flex: 1,
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
+    [theme.breakpoints.down('xs')]: {
+      height: '50%'
+    }
   },
   container: {
     backgroundColor: '#f2f2f2',
@@ -45,13 +47,13 @@ class Conversation extends Component {
 
     return (
       <Grid className={classes.container} container>
-        <Grid className={classes.chat} item>
+        <Grid className={classes.chat} sm={6} xs={12} item>
           <Provider store={setupStore()}>
             <Chat {...lauraMockProps} />
           </Provider>
         </Grid>
 
-        <Grid className={classes.chat} item>
+        <Grid className={classes.chat} sm={6} xs={12} item>
           <Provider store={setupStore()}>
             <Chat {...robMockProps} />
           </Provider>

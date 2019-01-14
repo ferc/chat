@@ -1,6 +1,15 @@
 import uuid from 'uuid/v4'
 import * as types from './actionTypes'
+import * as events from './eventNames'
 import { fetchConversationMock } from './mocks'
+
+export const contactTyping = () => ({
+  type: types.CONTACT_TYPING
+})
+
+export const contactStopTyping = () => ({
+  type: types.CONTACT_STOP_TYPING
+})
 
 export const fetchConversation = userId => async dispatch => {
   try {
@@ -28,31 +37,6 @@ export const fetchConversationSuccess = conversation => ({
   conversation
 })
 
-export const sendMessage = (socket, message) => async dispatch => {
-  const trackId = uuid()
-
-  const optimisticMessage = {
-    ...message,
-    date: new Date().toISOString(),
-    trackId
-  }
-
-  dispatch(sendMessageRequest(optimisticMessage))
-
-  socket.emit('new-message', optimisticMessage)
-}
-
-export const sendMessageError = (errorMessage, trackId) => ({
-  type: types.SEND_MESSAGE_ERROR,
-  errorMessage,
-  trackId
-})
-
-export const sendMessageRequest = optimisticMessage => ({
-  type: types.SEND_MESSAGE_REQUEST,
-  optimisticMessage
-})
-
 export const messageDelivered = date => ({
   type: types.MESSAGE_DELIVERED,
   date
@@ -68,10 +52,27 @@ export const newMessageReceived = message => ({
   message
 })
 
-export const contactTyping = () => ({
-  type: types.CONTACT_TYPING
+export const sendMessage = (socket, message) => async dispatch => {
+  const trackId = uuid()
+
+  const optimisticMessage = {
+    ...message,
+    date: new Date().toISOString(),
+    trackId
+  }
+
+  dispatch(sendMessageRequest(optimisticMessage))
+
+  socket.emit(events.NEW_MESSAGE, optimisticMessage)
+}
+
+export const sendMessageError = (errorMessage, trackId) => ({
+  type: types.SEND_MESSAGE_ERROR,
+  errorMessage,
+  trackId
 })
 
-export const contactStopTyping = () => ({
-  type: types.CONTACT_STOP_TYPING
+export const sendMessageRequest = optimisticMessage => ({
+  type: types.SEND_MESSAGE_REQUEST,
+  optimisticMessage
 })

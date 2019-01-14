@@ -11,6 +11,7 @@ import { contactTyping, contactStopTyping, messageDelivered, messageRead, newMes
 import ChatBackgroundImage from '../assets/background-chat.png'
 import { NAME } from '../constants'
 import { createSocket } from '../mocks'
+import * as events from '../eventNames'
 import ContactStatus from './ContactStatus'
 import MessageForm from './MessageForm'
 import Thread from './Thread'
@@ -54,31 +55,31 @@ class Conversation extends Component {
     const { contactTyping, contactStopTyping, messageDelivered, messageRead, newMessageReceived, user } = this.props
 
     this.containerRef.current.addEventListener('click', () => {
-      this.socket.emit('message-read')
+      this.socket.emit(events.MESSAGE_READ)
     })
-    this.socket.on('message-delivered', ({ date, userId }) => {
+    this.socket.on(events.MESSAGE_DELIVERED, ({ date, userId }) => {
       if (userId !== user.id) {
         messageDelivered(date)
       }
     })
-    this.socket.on('message-read', ({ date, userId }) => {
+    this.socket.on(events.MESSAGE_READ, ({ date, userId }) => {
       if (userId !== user.id) {
         messageRead(date)
       }
     })
-    this.socket.on('new-message', ({ message, userId }) => {
+    this.socket.on(events.NEW_MESSAGE, ({ message, userId }) => {
       newMessageReceived(message)
 
       if (userId !== user.id) {
-        this.socket.emit('message-delivered')
+        this.socket.emit(events.MESSAGE_DELIVERED)
       }
     })
-    this.socket.on('typing', ({ userId }) => {
+    this.socket.on(events.TYPING, ({ userId }) => {
       if (userId !== user.id) {
         contactTyping()
       }
     })
-    this.socket.on('stop-typing', ({ userId }) => {
+    this.socket.on(events.STOP_TYPING, ({ userId }) => {
       if (userId !== user.id) {
         contactStopTyping()
       }

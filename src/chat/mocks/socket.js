@@ -1,27 +1,35 @@
 import Emitter from 'component-emitter'
 import uuid from 'uuid/v4'
+import * as events from '../eventNames'
+import { latency, wait } from './utils'
 
 const server = new Emitter()
 
 export default userId => {
   const client = new Emitter()
 
-  client.on('message-delivered', () => {
-    server.emit('message-delivered', {
+  client.on(events.MESSAGE_DELIVERED, async () => {
+    await wait(latency)
+
+    server.emit(events.MESSAGE_DELIVERED, {
       date: new Date().toISOString(),
       userId
     })
   })
 
-  client.on('message-read', () => {
-    server.emit('message-read', {
+  client.on(events.MESSAGE_READ, async () => {
+    await wait(latency)
+
+    server.emit(events.MESSAGE_READ, {
       date: new Date().toISOString(),
       userId
     })
   })
 
-  client.on('new-message', ({ content, receiverId, trackId }) => {
-    server.emit('new-message', {
+  client.on(events.NEW_MESSAGE, async ({ content, receiverId, trackId }) => {
+    await wait(latency)
+
+    server.emit(events.NEW_MESSAGE, {
       message: {
         content,
         date: new Date().toISOString(),
@@ -33,14 +41,18 @@ export default userId => {
     })
   })
 
-  client.on('stop-typing', () => {
-    server.emit('stop-typing', {
+  client.on(events.STOP_TYPING, async () => {
+    await wait(latency)
+
+    server.emit(events.STOP_TYPING, {
       userId
     })
   })
 
-  client.on('typing', () => {
-    server.emit('typing', {
+  client.on(events.TYPING, async () => {
+    await wait(latency)
+
+    server.emit(events.TYPING, {
       userId
     })
   })
