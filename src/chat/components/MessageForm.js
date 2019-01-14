@@ -9,7 +9,7 @@ import { sendMessage } from '../actions'
 
 const styles = theme => ({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 4,
     paddingTop: theme.spacing.unit,
     paddingRight: theme.spacing.unit * 2,
@@ -36,6 +36,10 @@ class Conversation extends Component {
     text: ''
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timeoutId)
+  }
+
   handleChange = event => {
     this.setState({
       text: event.target.value
@@ -43,7 +47,10 @@ class Conversation extends Component {
   }
 
   handleKeyDown = event => {
-    if (event.key !== 'Enter' || event.shiftKey) return
+    if (event.key !== 'Enter' || event.shiftKey) {
+      this.handleTyping()
+      return
+    }
 
     event.preventDefault()
     this.sendMessage()
@@ -55,13 +62,36 @@ class Conversation extends Component {
     this.sendMessage()
   }
 
+  handleTyping = () => {
+    if (!this.typing) {
+      const { socket } = this.props
+
+      this.typing = true
+      socket.emit('typing')
+    }
+
+    clearTimeout(this.timeoutId)
+    this.timeoutId = setTimeout(this.handleStopTyping, 2000)
+  }
+
+  handleStopTyping = () => {
+    const { socket } = this.props
+
+    this.typing = false
+    socket.emit('stop-typing')
+  }
+
   sendMessage = () => {
-    const { contactId, sendMessage, userId } = this.props
     const { text } = this.state
 
     if (!text) return
 
-    sendMessage(contactId, text, userId)
+    const { contactId, sendMessage, socket } = this.props
+
+    sendMessage(socket, {
+      content: text,
+      receiverId: contactId
+    })
 
     this.setState({
       text: ''
@@ -104,7 +134,7 @@ class Conversation extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  sendMessage: (userId, content, senderId) => dispatch(sendMessage(userId, content, senderId))
+  sendMessage: (socket, message) => dispatch(sendMessage(socket, message))
 })
 
 export default connect(

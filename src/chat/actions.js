@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4'
 import * as types from './actionTypes'
-import { fetchConversationMock, sendMessageMock } from './mocks'
+import { fetchConversationMock } from './mocks'
 
 export const fetchConversation = userId => async dispatch => {
   try {
@@ -28,31 +28,24 @@ export const fetchConversationSuccess = conversation => ({
   conversation
 })
 
-export const sendMessage = (userId, content, senderId) => async dispatch => {
-  const tempId = uuid()
+export const sendMessage = (socket, message) => async dispatch => {
+  const trackId = uuid()
 
-  try {
-    const optimisticMessage = {
-      date: new Date().toISOString(),
-      content,
-      senderId,
-      tempId
-    }
-
-    dispatch(sendMessageRequest(optimisticMessage))
-
-    const { data } = await sendMessageMock(userId, content, senderId)
-
-    dispatch(sendMessageSuccess(data, tempId))
-  } catch(e) {
-    dispatch(sendMessageError('There was an error on sending the message', tempId))
+  const optimisticMessage = {
+    ...message,
+    date: new Date().toISOString(),
+    trackId
   }
+
+  dispatch(sendMessageRequest(optimisticMessage))
+
+  socket.emit('new-message', optimisticMessage)
 }
 
-export const sendMessageError = (errorMessage, tempId) => ({
+export const sendMessageError = (errorMessage, trackId) => ({
   type: types.SEND_MESSAGE_ERROR,
   errorMessage,
-  tempId
+  trackId
 })
 
 export const sendMessageRequest = optimisticMessage => ({
@@ -60,8 +53,25 @@ export const sendMessageRequest = optimisticMessage => ({
   optimisticMessage
 })
 
-export const sendMessageSuccess = (message, tempId) => ({
-  type: types.SEND_MESSAGE_SUCCESS,
-  message,
-  tempId
+export const messageDelivered = date => ({
+  type: types.MESSAGE_DELIVERED,
+  date
+})
+
+export const messageRead = date => ({
+  type: types.MESSAGE_READ,
+  date
+})
+
+export const newMessageReceived = message => ({
+  type: types.NEW_MESSAGE_RECEIVED,
+  message
+})
+
+export const contactTyping = () => ({
+  type: types.CONTACT_TYPING
+})
+
+export const contactStopTyping = () => ({
+  type: types.CONTACT_STOP_TYPING
 })

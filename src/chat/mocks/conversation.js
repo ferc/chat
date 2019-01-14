@@ -9,7 +9,7 @@ export const fetchConversationMock = async userId => {
   return { data: conversation }
 }
 
-export const sendMessageMock = async (userId, content, senderId) => {
+export const sendMessageMock = async (userId, content, receiverId) => {
   await wait(1000)
 
   return {
@@ -17,7 +17,7 @@ export const sendMessageMock = async (userId, content, senderId) => {
       content,
       date: new Date().toISOString(),
       id: uuid(),
-      senderId
+      receiverId
     }
   }
 }

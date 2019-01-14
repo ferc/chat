@@ -26,7 +26,6 @@ const styles = theme => ({
   },
   text: {
     flex: 1,
-    fontWeight: 400,
     marginRight: theme.spacing.unit * 2,
     whiteSpace: 'pre-line'
   },
@@ -49,7 +48,7 @@ class Message extends Component {
           container
         >
           <Grid alignItems="flex-end" direction="row" justify="space-between" container>
-            <Typography className={classes.text} variant="body2">
+            <Typography className={classes.text} variant="body1">
               {content}
             </Typography>
 

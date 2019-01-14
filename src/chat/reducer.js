@@ -2,17 +2,30 @@ import * as types from './actionTypes'
 
 const initialState = {
   conversation: {
-    data: null,
+    data: {
+      deliveredDate: null,
+      messages: [],
+      readDate: null
+    },
     error: null,
     loading: false
   },
+  contactIsTyping: false,
   pendingMessages: []
 }
 
 export default (state = initialState, action) => {
-  console.log('reducer', action)
-
   switch (action.type) {
+    case types.CONTACT_STOP_TYPING:
+      return {
+        ...state,
+        contactIsTyping: false
+      }
+    case types.CONTACT_TYPING:
+      return {
+        ...state,
+        contactIsTyping: true
+      }
     case types.FETCH_CONVERSATION_ERROR:
       return {
         ...state,
@@ -38,10 +51,32 @@ export default (state = initialState, action) => {
           loading: false
         }
       }
+    case types.MESSAGE_DELIVERED:
+      return {
+        ...state,
+        conversation: {
+          ...state.conversation,
+          data: {
+            ...state.conversation.data,
+            deliveredDate: action.date
+          }
+        }
+      }
+    case types.MESSAGE_READ:
+      return {
+        ...state,
+        conversation: {
+          ...state.conversation,
+          data: {
+            ...state.conversation.data,
+            readDate: action.date
+          }
+        }
+      }
     case types.SEND_MESSAGE_ERROR: {
       const pendingMessages = [].concat(
         state.pendingMessages.map(message => {
-          if (message.tempId !== action.tempId) return message
+          if (message.trackId !== action.trackId) return message
 
           message.error = true
 
@@ -62,9 +97,9 @@ export default (state = initialState, action) => {
           action.optimisticMessage
         ]
       }
-    case types.SEND_MESSAGE_SUCCESS: {
+    case types.NEW_MESSAGE_RECEIVED: {
       const pendingMessages = state.pendingMessages.filter(message =>
-        message.tempId !== action.tempId
+        message.trackId !== action.message.trackId
       )
 
       return {
