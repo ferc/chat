@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
@@ -6,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import TextField from '@material-ui/core/TextField'
 import SendIcon from '@material-ui/icons/Send'
 import { sendMessage } from '../actions'
+import { STOP_TYPING, TYPING } from '../eventNames'
 
 const styles = theme => ({
   container: {
@@ -31,7 +33,16 @@ const styles = theme => ({
   }
 })
 
-class Conversation extends Component {
+export class MessageForm extends Component {
+  static propTypes = {
+    contactId: PropTypes.string.isRequired,
+    disabled: PropTypes.bool,
+    sendMessage: PropTypes.func.isRequired,
+    socket: PropTypes.shape({
+      emit: PropTypes.func.isRequired
+    }).isRequired
+  }
+
   state = {
     text: ''
   }
@@ -67,7 +78,7 @@ class Conversation extends Component {
       const { socket } = this.props
 
       this.typing = true
-      socket.emit('typing')
+      socket.emit(TYPING)
     }
 
     clearTimeout(this.timeoutId)
@@ -78,7 +89,7 @@ class Conversation extends Component {
     const { socket } = this.props
 
     this.typing = false
-    socket.emit('stop-typing')
+    socket.emit(STOP_TYPING)
   }
 
   sendMessage = () => {
@@ -107,6 +118,7 @@ class Conversation extends Component {
         <Grid className={classes.container} container>
           <TextField
             className={classes.messageInput}
+            data-testid="form-input"
             disabled={disabled}
             onChange={this.handleChange}
             onKeyDown={this.handleKeyDown}
@@ -123,7 +135,12 @@ class Conversation extends Component {
             justify="flex-end"
             container
           >
-            <IconButton className={classes.sendButton} disabled={disabled} type="submit">
+            <IconButton
+              className={classes.sendButton}
+              data-testid="form-button"
+              disabled={disabled}
+              type="submit"
+            >
               <SendIcon />
             </IconButton>
           </Grid>
@@ -140,4 +157,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   null,
   mapDispatchToProps
-)(withStyles(styles)(Conversation))
+)(withStyles(styles)(MessageForm))

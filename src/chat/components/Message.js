@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import moment from 'moment'
 import Grid from '@material-ui/core/Grid'
@@ -34,7 +35,14 @@ const styles = theme => ({
   }
 })
 
-class Message extends Component {
+export class Message extends Component {
+  static propTypes = {
+    content: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    isCurrentUser: PropTypes.bool.isRequired,
+    status: PropTypes.string
+  }
+
   render() {
     const { classes, content, date, isCurrentUser, status } = this.props
     const justify = isCurrentUser ? 'flex-end' : 'flex-start'
@@ -48,13 +56,13 @@ class Message extends Component {
           container
         >
           <Grid alignItems="flex-end" direction="row" justify="space-between" container>
-            <Typography className={classes.text} variant="body1">
+            <Typography className={classes.text} data-testid="message-content" variant="body1">
               {content}
             </Typography>
 
             <Grid item>
               <Grid alignItems="flex-end" container>
-                <Typography className={classes.time} variant="caption">
+                <Typography className={classes.time} data-testid="message-time" variant="caption">
                   {moment(date).format('HH:mm')}
                 </Typography>
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import blue from '@material-ui/core/colors/blue'
 import red from '@material-ui/core/colors/red'
@@ -32,7 +33,7 @@ const styles = theme => ({
   }
 })
 
-const MessageIcon = ({ classes, status }) => {
+export const MessageIcon = ({ classes, status }) => {
   switch (status) {
     case messageStatus.delivered:
       return <DoneAllIcon className={cx(classes.icon, classes.delivered)} />
@@ -47,6 +48,10 @@ const MessageIcon = ({ classes, status }) => {
     default:
       return null
   }
+}
+
+MessageIcon.propTypes = {
+  status: PropTypes.string
 }
 
 export default withStyles(styles)(MessageIcon)

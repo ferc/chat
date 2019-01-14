@@ -8,6 +8,7 @@
     "classnames": "^2.2.6",
     "component-emitter": "^1.2.1",
     "moment": "^2.23.0",
+    "moment-timezone": "^0.5.23",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",
@@ -19,7 +20,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
+    "test:coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

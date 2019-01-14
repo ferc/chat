@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Grid from '@material-ui/core/Grid'
 import RootRef from '@material-ui/core/RootRef'
@@ -21,7 +22,39 @@ const getMessageStatus = ({
   return messageStatus.sent
 }
 
-class Thread extends Component {
+export class Thread extends Component {
+  static propTypes = {
+    conversation: PropTypes.shape({
+      data: PropTypes.shape({
+        deliveredDate: PropTypes.string,
+        messages: PropTypes.arrayOf(
+          PropTypes.shape({
+            content: PropTypes.string.isRequired,
+            date: PropTypes.string.isRequired,
+            id: PropTypes.string.isRequired,
+            receiverId: PropTypes.string.isRequired
+          })
+        ).isRequired,
+        readDate: PropTypes.string
+      }),
+      error: PropTypes.string,
+      loading: PropTypes.bool.isRequired
+    }).isRequired,
+    pendingMessages: PropTypes.arrayOf(
+      PropTypes.shape({
+        content: PropTypes.string.isRequired,
+        date: PropTypes.string.isRequired,
+        error: PropTypes.bool,
+        receiverId: PropTypes.string.isRequired,
+        trackId: PropTypes.string.isRequired
+      })
+    ).isRequired,
+    user: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired
+  }
+
   containerRef = React.createRef()
 
   componentDidUpdate(prevProps) {

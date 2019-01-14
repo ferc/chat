@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
@@ -19,6 +20,9 @@ import Thread from './Thread'
 const styles = theme => ({
   contactName: {
     marginRight: theme.spacing.unit
+  },
+  contactStatus: {
+    paddingBottom: theme.spacing.unit / 2
   },
   container: {
     backgroundImage: `url("${ChatBackgroundImage}")`,
@@ -42,7 +46,48 @@ const styles = theme => ({
   }
 })
 
-class Conversation extends Component {
+export class Conversation extends Component {
+  static propTypes = {
+    contact: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired,
+    contactTyping: PropTypes.func.isRequired,
+    contactStopTyping: PropTypes.func.isRequired,
+    conversation: PropTypes.shape({
+      data: PropTypes.shape({
+        deliveredDate: PropTypes.string,
+        messages: PropTypes.arrayOf(
+          PropTypes.shape({
+            content: PropTypes.string.isRequired,
+            date: PropTypes.string.isRequired,
+            id: PropTypes.string.isRequired,
+            receiverId: PropTypes.string.isRequired
+          })
+        ).isRequired,
+        readDate: PropTypes.string
+      }),
+      error: PropTypes.string,
+      loading: PropTypes.bool.isRequired
+    }).isRequired,
+    messageDelivered: PropTypes.func.isRequired,
+    messageRead: PropTypes.func.isRequired,
+    newMessageReceived: PropTypes.func.isRequired,
+    pendingMessages: PropTypes.arrayOf(
+      PropTypes.shape({
+        content: PropTypes.string.isRequired,
+        date: PropTypes.string.isRequired,
+        error: PropTypes.bool,
+        receiverId: PropTypes.string.isRequired,
+        trackId: PropTypes.string.isRequired
+      })
+    ).isRequired,
+    user: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired
+  }
+
   containerRef = React.createRef()
 
   constructor(props)  {
@@ -95,11 +140,14 @@ class Conversation extends Component {
           <Grid className={classes.container} direction="column" container>
             <Toolbar className={classes.header}>
               <Grid alignItems="flex-end" container>
-                <Typography className={classes.contactName} variant="title">
+                <Typography className={classes.contactName} data-testid="contact-name" variant="h6">
                   {contact.name}
                 </Typography>
 
-                <ContactStatus readDate={conversation.data.readDate} />
+                <ContactStatus
+                  classes={{ text: classes.contactStatus }}
+                  readDate={conversation.data.readDate}
+                />
               </Grid>
             </Toolbar>
 
