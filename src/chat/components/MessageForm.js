@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import TextField from '@material-ui/core/TextField'
-
 import SendIcon from '@material-ui/icons/Send'
+import { sendMessage } from '../actions'
 
 const styles = theme => ({
   container: {
@@ -55,9 +56,12 @@ class Conversation extends Component {
   }
 
   sendMessage = () => {
+    const { contactId, sendMessage, userId } = this.props
     const { text } = this.state
 
-    console.log('send', text)
+    if (!text) return
+
+    sendMessage(contactId, text, userId)
 
     this.setState({
       text: ''
@@ -65,7 +69,7 @@ class Conversation extends Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, disabled } = this.props
     const { text } = this.state
 
     return (
@@ -73,6 +77,7 @@ class Conversation extends Component {
         <Grid className={classes.container} container>
           <TextField
             className={classes.messageInput}
+            disabled={disabled}
             onChange={this.handleChange}
             onKeyDown={this.handleKeyDown}
             placeholder={'Type a message'}
@@ -88,7 +93,7 @@ class Conversation extends Component {
             justify="flex-end"
             container
           >
-            <IconButton className={classes.sendButton} type="submit">
+            <IconButton className={classes.sendButton} disabled={disabled} type="submit">
               <SendIcon />
             </IconButton>
           </Grid>
@@ -98,4 +103,11 @@ class Conversation extends Component {
   }
 }
 
-export default withStyles(styles)(Conversation)
+const mapDispatchToProps = dispatch => ({
+  sendMessage: (userId, content, senderId) => dispatch(sendMessage(userId, content, senderId))
+})
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withStyles(styles)(Conversation))

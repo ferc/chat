@@ -27,7 +27,8 @@ const styles = theme => ({
   text: {
     flex: 1,
     fontWeight: 400,
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing.unit * 2,
+    whiteSpace: 'pre-line'
   },
   time: {
     marginRight: theme.spacing.unit / 2
@@ -36,7 +37,7 @@ const styles = theme => ({
 
 class Message extends Component {
   render() {
-    const { classes, date, isCurrentUser, message, status } = this.props
+    const { classes, content, date, isCurrentUser, status } = this.props
     const justify = isCurrentUser ? 'flex-end' : 'flex-start'
     const containerClass = isCurrentUser ? classes.sent : classes.received
 
@@ -49,13 +50,13 @@ class Message extends Component {
         >
           <Grid alignItems="flex-end" direction="row" justify="space-between" container>
             <Typography className={classes.text} variant="body2">
-              {message}
+              {content}
             </Typography>
 
             <Grid item>
               <Grid alignItems="flex-end" container>
                 <Typography className={classes.time} variant="caption">
-                  {moment(date).format('hh:mm')}
+                  {moment(date).format('HH:mm')}
                 </Typography>
 
                 <MessageIcon status={status} />

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
 
 import ChatBackgroundImage from '../assets/background-chat.png'
-import messageStatus from '../enums/messageStatus'
-import Message from './Message'
+import { NAME } from '../constants'
 import MessageForm from './MessageForm'
+import Thread from './Thread'
 
 const styles = theme => ({
   container: {
@@ -23,59 +24,32 @@ const styles = theme => ({
   }
 })
 
-const getMessageStatus = ({
-  deliveredDate,
-  isCurrentUser,
-  messageDate,
-  readDate
-}) => {
-  if (!isCurrentUser) return null
-  if (messageDate <= readDate) return messageStatus.read
-  if (messageDate <= deliveredDate) return messageStatus.delivered
-  return messageStatus.sent
-}
-
 class Conversation extends Component {
-  static defaultProps =  {
-    messages: []
-  }
-
   render() {
-    const { classes, deliveredDate, messages, readDate, user } = this.props
-
-    const thread = messages.map(({ date, id, message, senderId }) => {
-      const isCurrentUser = senderId === user.id
-      const status = getMessageStatus({
-        deliveredDate,
-        isCurrentUser,
-        messageDate: date,
-        readDate
-      })
-
-      return (
-        <Grid key={id} item>
-          <Message
-            date={date}
-            isCurrentUser={isCurrentUser}
-            message={message}
-            status={status}
-          />
-        </Grid>
-      )
-    })
+    const { classes, contact, conversation, pendingMessages, user } = this.props
 
     return (
       <Grid className={classes.container} direction="column" container>
-        <Grid className={classes.thread} direction="column" wrap="nowrap" container>
-          {thread}
-        </Grid>
+        <Thread
+          classes={{ container: classes.thread }}
+          conversation={conversation}
+          pendingMessages={pendingMessages}
+          user={user}
+        />
 
         <Grid className={classes.form} container>
-          <MessageForm />
+          <MessageForm contactId={contact.id} disabled={!conversation} userId={user.id} />
         </Grid>
       </Grid>
     )
   }
 }
 
-export default withStyles(styles)(Conversation)
+const mapStateToProps = state => ({
+  conversation: state[NAME].conversation,
+  pendingMessages: state[NAME].pendingMessages
+})
+
+export default connect(
+  mapStateToProps
+)(withStyles(styles)(Conversation))
