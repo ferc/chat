@@ -7,6 +7,8 @@ import setupStore from './setupStore'
 
 const styles = theme => ({
   chat: {
+    minHeight: 300,
+    height: '100%',
     padding: theme.spacing.unit * 2,
     [theme.breakpoints.down('xs')]: {
       height: '50%'

@@ -86,11 +86,14 @@ export class Thread extends Component {
 
     const { deliveredDate, messages, readDate } = data
 
-    const sortByDate =  (a, b) => {
-      // pending messages without errors at the end
-      if (!a.id && !a.error) return 1
-      if (a.date > b.date) return 1
-      if (a.date < b.date) return -1
+    const sortByDate =  (first, second) => {
+      const firstIsPending = !first.id && !first.error
+      const secondIsPending = !second.id && !second.error
+
+      if (firstIsPending && !secondIsPending) return 1
+      if (!firstIsPending && secondIsPending) return -1
+      if (first.date > second.date) return 1
+      if (first.date < second.date) return -1
       return 0
     }
 
