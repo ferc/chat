@@ -100,7 +100,7 @@ export class Thread extends Component {
     const thread = messages
       .concat(pendingMessages)
       .sort(sortByDate)
-      .map(({ content, date, error, id, receiverId, trackId }) => {
+      .map(({ content, date, error, id, image, receiverId, trackId }) => {
         const isCurrentUser = receiverId !== user.id
         const status = getMessageStatus({
           deliveredDate,
@@ -110,15 +110,17 @@ export class Thread extends Component {
           messageDate: date,
           readDate
         })
+        const messageProps = {
+          content,
+          date,
+          image,
+          isCurrentUser,
+          status
+        }
 
         return (
           <Grid  key={id || trackId} item>
-            <Message
-              content={content}
-              date={date}
-              isCurrentUser={isCurrentUser}
-              status={status}
-            />
+            <Message {...messageProps} />
           </Grid>
         )
       })

@@ -19,6 +19,10 @@ const styles = theme => ({
     maxWidth: '70%',
     width: 'auto'
   },
+  image: {
+    marginBottom: 8,
+    width: 150
+  },
   received: {
     backgroundColor: '#ffffff'
   },
@@ -39,12 +43,13 @@ export class Message extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     date: PropTypes.string.isRequired,
+    image: PropTypes.string,
     isCurrentUser: PropTypes.bool.isRequired,
     status: PropTypes.string
   }
 
   render() {
-    const { classes, content, date, isCurrentUser, status } = this.props
+    const { classes, content, date, image, isCurrentUser, status } = this.props
     const justify = isCurrentUser ? 'flex-end' : 'flex-start'
     const containerClass = isCurrentUser ? classes.sent : classes.received
 
@@ -56,9 +61,13 @@ export class Message extends Component {
           container
         >
           <Grid alignItems="flex-end" direction="row" justify="space-between" container>
-            <Typography className={classes.text} data-testid="message-content" variant="body1">
-              {content}
-            </Typography>
+            <Grid direction="column" container>
+              {image && <img className={classes.image} src={image} />}
+
+              <Typography className={classes.text} data-testid="message-content" variant="body1">
+                {content}
+              </Typography>
+            </Grid>
 
             <Grid item>
               <Grid alignItems="flex-end" container>

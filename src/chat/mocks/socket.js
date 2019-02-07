@@ -26,7 +26,7 @@ export default userId => {
     })
   })
 
-  client.on(events.NEW_MESSAGE, async ({ content, receiverId, trackId }) => {
+  client.on(events.NEW_MESSAGE, async ({ content, image, receiverId, trackId }) => {
     await wait(latency)
 
     server.emit(events.NEW_MESSAGE, {
@@ -34,6 +34,7 @@ export default userId => {
         content,
         date: new Date().toISOString(),
         id: uuid(),
+        image,
         receiverId,
         trackId,
       },

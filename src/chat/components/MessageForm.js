@@ -5,11 +5,18 @@ import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import TextField from '@material-ui/core/TextField'
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera'
 import SendIcon from '@material-ui/icons/Send'
 import { sendMessage } from '../actions'
 import { STOP_TYPING, TYPING } from '../eventNames'
 
 const styles = theme => ({
+  button: {
+    marginLeft: theme.spacing.unit
+  },
+  buttonContainer: {
+    width: 'auto'
+  },
   container: {
     backgroundColor: '#ffffff',
     borderRadius: 4,
@@ -21,15 +28,18 @@ const styles = theme => ({
   form: {
     width: '100%'
   },
+  imagePreview: {
+    height: 48,
+    marginLeft: 8,
+    marginRight: 8,
+    width: 48
+  },
   messageInput: {
     flex: 1,
     marginTop: theme.spacing.unit / 2
   },
-  sendButton: {
-    marginLeft: theme.spacing.unit
-  },
-  sendButtonContainer: {
-    width: 'auto'
+  uploadInput: {
+    display: 'none'
   }
 })
 
@@ -44,16 +54,40 @@ export class MessageForm extends Component {
   }
 
   state = {
+    image: null,
     text: ''
   }
+
+  uploadInputRef = React.createRef()
 
   componentWillUnmount() {
     clearTimeout(this.timeoutId)
   }
 
+  handleAddImage = event => {
+    this.uploadInputRef.current.click()
+  }
+
   handleChange = event => {
     this.setState({
       text: event.target.value
+    })
+  }
+
+  handleImageChange = async event => {
+    if (!event.target.files.length) {
+      this.setState({
+        image: null
+      })
+
+      return
+    }
+
+    const imageFile = event.target.files[0]
+    const image = await this.imageFileToBase64(imageFile)
+
+    this.setState({
+      image
     })
   }
 
@@ -92,26 +126,38 @@ export class MessageForm extends Component {
     socket.emit(STOP_TYPING)
   }
 
-  sendMessage = () => {
-    const { text } = this.state
+  imageFileToBase64 = file => {
+    const fileReader = new FileReader()
+    fileReader.readAsDataURL(file)
 
-    if (!text) return
+    return new Promise((resolve, reject) => {
+      fileReader.onload = () => resolve(fileReader.result)
+      fileReader.onerror = error => reject(error)
+    })
+  }
+
+  sendMessage = () => {
+    const { image, text } = this.state
+
+    if (!image && !text) return
 
     const { contactId, sendMessage, socket } = this.props
 
     sendMessage(socket, {
       content: text,
+      image,
       receiverId: contactId
     })
 
     this.setState({
+      image: null,
       text: ''
     })
   }
 
   render() {
     const { classes, disabled } = this.props
-    const { text } = this.state
+    const { image, text } = this.state
 
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
@@ -129,14 +175,40 @@ export class MessageForm extends Component {
             multiline
           />
 
+          {image && <img className={classes.imagePreview} src={image} />}
+
           <Grid
-            className={classes.sendButtonContainer}
+            className={classes.buttonContainer}
             direction="column"
             justify="flex-end"
             container
           >
             <IconButton
-              className={classes.sendButton}
+              className={classes.button}
+              data-testid="form-add-image-button"
+              disabled={disabled}
+              onClick={this.handleAddImage}
+              type="button"
+            >
+              <PhotoCameraIcon />
+            </IconButton>
+
+            <input
+              className={classes.uploadInput}
+              onChange={this.handleImageChange}
+              ref={this.uploadInputRef}
+              type="file"
+            />
+          </Grid>
+
+          <Grid
+            className={classes.buttonContainer}
+            direction="column"
+            justify="flex-end"
+            container
+          >
+            <IconButton
+              className={classes.button}
               data-testid="form-button"
               disabled={disabled}
               type="submit"
