@@ -23,6 +23,10 @@ const styles = theme => ({
     marginBottom: 8,
     width: 150
   },
+  message: {
+    flex: 1,
+    marginRight: theme.spacing.unit * 2
+  },
   received: {
     backgroundColor: '#ffffff'
   },
@@ -30,8 +34,6 @@ const styles = theme => ({
     backgroundColor: '#dcf8c6'
   },
   text: {
-    flex: 1,
-    marginRight: theme.spacing.unit * 2,
     whiteSpace: 'pre-line'
   },
   time: {
@@ -61,7 +63,7 @@ export class Message extends Component {
           container
         >
           <Grid alignItems="flex-end" direction="row" justify="space-between" container>
-            <Grid direction="column" container>
+            <Grid className={classes.message} direction="column" container>
               {image && <img className={classes.image} src={image} />}
 
               <Typography className={classes.text} data-testid="message-content" variant="body1">

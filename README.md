@@ -10,7 +10,7 @@
 
 ## App
 
-**Demo:** [https://chat-f9w34rrfr.now.sh](https://chat-f9w34rrfr.now.sh)
+**Demo:** [https://chat-8wswgplwk.now.sh/](https://chat-8wswgplwk.now.sh/)
 
 Chat was built with React, Redux, Redux Thunk and some mocks for JavaScript and Material-UI for CSS.
 
